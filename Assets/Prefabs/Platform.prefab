@@ -225,7 +225,7 @@ MonoBehaviour:
   - {fileID: 8852144343291495037}
   - {fileID: 2722165289949584528}
   - {fileID: 1574592997805263636}
-  spawnPosY: 1.69
+  spawnPosY: 0.65
   spawnPosZ: 136
   platformLength: 70
 --- !u!1 &8852144343291495037
