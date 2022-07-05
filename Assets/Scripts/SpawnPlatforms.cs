@@ -7,6 +7,7 @@ public class SpawnPlatforms : MonoBehaviour
     public GameObject platformPrefab;
     public float currentPlatformEnd = 63.03f;
     public float nextPlatformSpawn = 204.8f;
+
     void Update()
     {
         SpawnPlatform();
