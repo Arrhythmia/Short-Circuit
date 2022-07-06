@@ -920,7 +920,14 @@ MonoBehaviour:
   gravity: 30
   jumpForce: 700
   groundLevel: 0.19
+  zPos: -6.23
+  newPos: {x: 0, y: 0, z: 0}
+  groundDetection: 0.6
   lerpValue: 0.15
+  lastTouchPoint: {x: 0, y: 0, z: 0}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 55
 --- !u!135 &1758096149
 SphereCollider:
   m_ObjectHideFlags: 0

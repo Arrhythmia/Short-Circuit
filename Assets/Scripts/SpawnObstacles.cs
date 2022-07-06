@@ -9,6 +9,7 @@ public class SpawnObstacles : MonoBehaviour
     public GameObject[] spawnPosX = new GameObject[4];
     public float spawnPosY = 0.65f;
     public float spawnPosZ = 136;
+    public float nextPosZ = 2.0073f;
     public int platformLength = 70;
 
     System.Random random = new System.Random();
@@ -37,7 +38,7 @@ public class SpawnObstacles : MonoBehaviour
                     Destroy(obstacleRow[random.Next(0, 3)]);
                 }
             }
-            spawnPos.z += 2.0073f;
+            spawnPos.z += nextPosZ; // Prepare next spawning position
         }
     }
 }

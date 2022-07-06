@@ -9,29 +9,32 @@ public class PlayerController : MonoBehaviour
     public float gravity = 0.81f;
     public float jumpForce = 10f;
     public float groundLevel = 0.19f;
+    public float zPos = -6.23f;
 
-    Vector3 newPos = new Vector3(0, 0.48f, -6.23f);
+    public Vector3 newPos;
 
+    public float groundDetection = 0.6f;
     Rigidbody rb;
 
     public float lerpValue = 10f;
 
 
     private InputManager inputManager;
-
+    
     private void Awake()
     {
         inputManager = InputManager.Instance;
     }
+    
 
     private void OnEnable()
     {
-        inputManager.OnStartTouch += Move;
+        inputManager.OnStartTouch += UpdateNewPos;
         inputManager.OnCancelTouch += Jump;
     }
     private void OnDisable()
     {
-        inputManager.OnEndTouch -= Move;
+        inputManager.OnEndTouch -= UpdateNewPos;
         inputManager.OnCancelTouch -= Jump;
     }
 
@@ -39,18 +42,16 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        newPos = new Vector3(0, groundLevel, zPos);
     }
 
 
     bool IsGrounded()
     {
-        return (Physics.Raycast(transform.position, Vector3.down, 1f)); // raycast down to look for ground is not detecting ground? only works if allowing jump when grounded = false; // return "Ground" layer as layer
+        return (Physics.Raycast(transform.position, Vector3.down * groundDetection, 1f)); // raycast down to look for ground is not detecting ground? only works if allowing jump when grounded = false; // return "Ground" layer as layer
     }
     void MovePlayer()
     {
-        transform.SetPositionAndRotation(new Vector3(transform.position.x, transform.position.y, -6.23f), new Quaternion(0,0,0,0));
-
-
         if (inputManager.fingerOnScreen)
         {
             newPos = new Vector3(newPos.x, groundLevel, newPos.z);
@@ -63,10 +64,12 @@ public class PlayerController : MonoBehaviour
         {
             newPos = new Vector3(-edge, newPos.y, newPos.z);
         }
+
+        transform.SetPositionAndRotation(new Vector3(transform.position.x, transform.position.y, zPos), new Quaternion(0, 0, 0, 0)); // Check later if necessary
     }
     void Update()
     {
-        Move(inputManager.touchPos);
+        UpdateNewPos(inputManager.touchPos);
     }
     private void FixedUpdate()
     {
@@ -76,22 +79,29 @@ public class PlayerController : MonoBehaviour
     private void LateUpdate()
     {
         MovePlayer();
+
+        Debug.DrawRay(transform.position, Vector3.down * groundDetection, Color.red);
     }
-    public void Move(Vector2 screenPos)
+    public Vector3 lastTouchPoint;
+    public LayerMask layerMask;
+    public void UpdateNewPos(Vector2 screenPos)
     {
         Ray ray = Camera.main.ScreenPointToRay(screenPos);
-        Debug.DrawRay(ray.origin, ray.direction * 10, Color.yellow);
 
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
+        RaycastHit[] hits = Physics.RaycastAll(ray, 10f);
+        
+        foreach (RaycastHit hit in hits)
         {
-            newPos = new Vector3(hit.point.x, transform.position.y, transform.position.z);
+            if (hit.collider.CompareTag("Platform"))
+            {
+                newPos = new Vector3(hit.point.x, transform.position.y, transform.position.z);
+            }
         }
     }
     void Jump()
     {
         if (IsGrounded())
-            rb.AddForce(Vector3.up * jumpForce * Time.fixedDeltaTime, ForceMode.Impulse);
+            rb.AddForce(jumpForce * Time.fixedDeltaTime * Vector3.up, ForceMode.Impulse);
     }
     void ApplyGravity()
     {
