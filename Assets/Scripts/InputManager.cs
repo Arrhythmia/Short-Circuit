@@ -44,23 +44,25 @@ public class InputManager : Singleton<InputManager>
 
     private void Start()
     {
+        touchPos = new Vector2(Screen.width / 2, Screen.height / 2);
         touchControls.Touch.TouchPress.started += ctx => StartTouch(ctx);
         touchControls.Touch.TouchPress.canceled += ctx => EndTouch(ctx);
     }
     private void Update()
     {
         Application.targetFrameRate = framerate;
-        touchPos = touchControls.Touch.TouchPosition.ReadValue<Vector2>();
+        if (fingerOnScreen)
+        {
+            touchPos = touchControls.Touch.TouchPosition.ReadValue<Vector2>();
+        }
     }
     private void StartTouch(InputAction.CallbackContext context)
     {
-        Debug.Log("Touch start at location " + touchControls.Touch.TouchPosition.ReadValue<Vector2>());
         fingerOnScreen = true;
         OnStartTouch?.Invoke(touchControls.Touch.TouchPosition.ReadValue<Vector2>());
     }
     private void EndTouch(InputAction.CallbackContext context)
     {
-        Debug.Log("Touch end");
         fingerOnScreen = false;
         OnEndTouch?.Invoke(touchControls.Touch.TouchPosition.ReadValue<Vector2>());
         OnCancelTouch?.Invoke();

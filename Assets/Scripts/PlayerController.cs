@@ -46,14 +46,9 @@ public class PlayerController : MonoBehaviour
         inputManager.OnEndTouch -= UpdateNewPos;
         inputManager.OnCancelTouch -= Jump;
     }
-
-
- 
-
-
     public bool IsGrounded()
     {
-        return (Physics.Raycast(transform.position, Vector3.down * groundDetection, 1f)); // raycast down to look for ground is not detecting ground? only works if allowing jump when grounded = false; // return "Ground" layer as layer
+        return (Physics.Raycast(transform.position, Vector3.down, groundDetection)); // raycast down to look for ground is not detecting ground? only works if allowing jump when grounded = false; // return "Ground" layer as layer
     }
     void MovePlayer()
     {
@@ -98,6 +93,7 @@ public class PlayerController : MonoBehaviour
             if (hit.collider.CompareTag("Platform"))
             {
                 newPos = new Vector3(hit.point.x, transform.position.y, transform.position.z);
+                break;
             }
         }
     }
