@@ -19,13 +19,22 @@ public class PlayerController : MonoBehaviour
     public float lerpValue = 10f;
 
 
+    public GameObject GameManagerObject;
+
     private InputManager inputManager;
-    
+    private TimeManager timeManager;
+    private GameManager gameManager;
     private void Awake()
     {
         inputManager = InputManager.Instance;
     }
-    
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        timeManager = GameManagerObject.GetComponent<TimeManager>();
+        gameManager = GameManagerObject.GetComponent<GameManager>();
+        newPos = new Vector3(0, groundLevel, zPos);
+    }
 
     private void OnEnable()
     {
@@ -39,14 +48,10 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    private void Start()
-    {
-        rb = GetComponent<Rigidbody>();
-        newPos = new Vector3(0, groundLevel, zPos);
-    }
+ 
 
 
-    bool IsGrounded()
+    public bool IsGrounded()
     {
         return (Physics.Raycast(transform.position, Vector3.down * groundDetection, 1f)); // raycast down to look for ground is not detecting ground? only works if allowing jump when grounded = false; // return "Ground" layer as layer
     }
@@ -82,13 +87,11 @@ public class PlayerController : MonoBehaviour
 
         Debug.DrawRay(transform.position, Vector3.down * groundDetection, Color.red);
     }
-    public Vector3 lastTouchPoint;
-    public LayerMask layerMask;
     public void UpdateNewPos(Vector2 screenPos)
     {
         Ray ray = Camera.main.ScreenPointToRay(screenPos);
 
-        RaycastHit[] hits = Physics.RaycastAll(ray, 10f);
+        RaycastHit[] hits = Physics.RaycastAll(ray, 50f);
         
         foreach (RaycastHit hit in hits)
         {
@@ -106,5 +109,15 @@ public class PlayerController : MonoBehaviour
     void ApplyGravity()
     {
         rb.AddForce(Vector3.down * gravity);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.CompareTag("Obstacle"))
+        {
+            gameManager.OnDeath();
+            timeManager.SlowDown();
+            gameObject.SetActive(false);
+        }
     }
 }
