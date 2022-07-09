@@ -4,26 +4,25 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public float zPos = -6.23f;
+    public float lerpValue = 10f;
+
+    Vector3 newPos;
+    Rigidbody rb;
+    public GameObject GameManagerObject;
+    private InputManager inputManager;
+    private TimeManager timeManager;
+    private GameManager gameManager;
+
+    public bool godMode = false;
+    [Header("Movement values")]
     public float speed = 5f;
     public float edge = -4.5f;
     public float gravity = 0.81f;
     public float jumpForce = 10f;
     public float groundLevel = 0.19f;
-    public float zPos = -6.23f;
-
-    public Vector3 newPos;
-
     public float groundDetection = 0.6f;
-    Rigidbody rb;
 
-    public float lerpValue = 10f;
-
-
-    public GameObject GameManagerObject;
-
-    private InputManager inputManager;
-    private TimeManager timeManager;
-    private GameManager gameManager;
     private void Awake()
     {
         inputManager = InputManager.Instance;
@@ -48,7 +47,7 @@ public class PlayerController : MonoBehaviour
     }
     public bool IsGrounded()
     {
-        return (Physics.Raycast(transform.position, Vector3.down, groundDetection)); // raycast down to look for ground is not detecting ground? only works if allowing jump when grounded = false; // return "Ground" layer as layer
+        return (Physics.Raycast(transform.position, Vector3.down, groundDetection));
     }
     void MovePlayer()
     {
@@ -109,7 +108,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag("Obstacle"))
+        if (collision.collider.CompareTag("Obstacle") && !godMode)
         {
             gameManager.OnDeath();
             timeManager.SlowDown();
