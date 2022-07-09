@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: fd44501aebf7ecc439937390c7781164, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -111,16 +111,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3df539b050cfae24088ed7bffb00436a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  zPos: -6.23
+  lerpValue: 0.4
+  GameManagerObject: {fileID: 0}
+  godMode: 0
   speed: 20
   edge: -4.5
   gravity: 30
   jumpForce: 700
   groundLevel: 0.19
-  zPos: -6.23
-  newPos: {x: 0, y: 0, z: 0}
   groundDetection: 0.6
-  lerpValue: 0.4
-  GameManagerObject: {fileID: 0}
 --- !u!54 &7295224278513405910
 Rigidbody:
   m_ObjectHideFlags: 0
