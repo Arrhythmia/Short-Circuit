@@ -404,4 +404,4 @@ MonoBehaviour:
   spawnPosZ: 136
   nextPosZ: 2.0073
   platformLength: 70
-  spawnPercentage: 3
+  spawnPercentage: 5
