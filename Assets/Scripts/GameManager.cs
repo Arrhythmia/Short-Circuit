@@ -6,16 +6,22 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
+    public int framerate = 60;
     public GameObject totalScore;
     public GameObject restartButton;
     TextMeshProUGUI scoreText;
 
     public GameObject[] elementsToDisableOnDeath;
+
+    private void Awake()
+    {
+        Application.targetFrameRate = framerate;
+    }
     private void Start()
     {
         scoreText = totalScore.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
     }
-    public void OnDeath()
+    public void Die()
     {
         foreach (GameObject element in elementsToDisableOnDeath)
         {

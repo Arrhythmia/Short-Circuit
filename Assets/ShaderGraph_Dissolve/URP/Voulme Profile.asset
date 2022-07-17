@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 97c23e3b12dc18c42a140437e53d3951, type: 3}
   m_Name: Tonemapping
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   active: 1
   m_AdvancedMode: 0
   mode:
@@ -28,7 +28,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0b2db86121404754db890f4c8dfe81b2, type: 3}
   m_Name: Bloom
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   active: 1
   m_AdvancedMode: 0
   threshold:
@@ -75,7 +75,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
   m_Name: Voulme Profile
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   components:
   - {fileID: -8864246074232298950}
   - {fileID: -5034541067323118379}
@@ -91,7 +91,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 899c54efeace73346a0a16faa3afe726, type: 3}
   m_Name: Vignette
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   active: 1
   m_AdvancedMode: 0
   color:

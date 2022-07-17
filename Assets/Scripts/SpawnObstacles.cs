@@ -5,40 +5,56 @@ using System;
 
 public class SpawnObstacles : MonoBehaviour
 {
-    public GameObject obstacle;
+    public GameObject[] obstacles;
     public GameObject[] spawnPosX = new GameObject[4];
     public float spawnPosY = 0.65f;
     public float spawnPosZ = 136;
     public float nextPosZ = 2.0073f;
     public int platformLength = 70;
+    public int spawnPercentage = 20;
 
     System.Random random = new System.Random();
     void Start()
     {
-        SpawnRandomObstacles();
+        SpawnRandomObstacleAtRandomPosition();
     }
 
-    void SpawnRandomObstacles()
+    void SpawnRandomObstacleAtRandomPosition()
     {
-        List<GameObject> obstacleRow = new List<GameObject>();
         Vector3 spawnPos = new Vector3(0, spawnPosY, spawnPosZ);
         for (int i = 0; i <= platformLength; i++)
         {
             for (int j = 0; j < spawnPosX.Length; j++)
             {
-                if (random.Next(1, 15) == 1)
+                if (random.Next(0, 100) <= spawnPercentage)
                 {
                     spawnPos.x = spawnPosX[j].transform.position.x;
-                    GameObject spawnedObstacle = Instantiate(obstacle, spawnPos, new Quaternion(0, 0, 0, 0));
-                    obstacleRow.Add(spawnedObstacle);
-                    spawnedObstacle.transform.SetParent(transform, true);
-                }
-                if (obstacleRow.Count >= 4)
-                {
-                    Destroy(obstacleRow[random.Next(0, 3)]);
+                    int randomObjectIndex = SpawnRandomObstacle(spawnPos, j);
+
+                    if (randomObjectIndex == 6)
+                    {
+                        j++;
+                    }
                 }
             }
             spawnPos.z += nextPosZ; // Prepare next spawning position
         }
+    }
+    int SpawnRandomObstacle(Vector3 spawnPos, int index)
+    {
+        int randomObjectIndex = random.Next(0, obstacles.Length);
+        GameObject obstacle = obstacles[randomObjectIndex];
+        Quaternion rotation;
+        if (index == 0 || index == spawnPosX.Length - 1)
+        {
+            rotation = new Quaternion(0, 0, 0, 0);
+        }
+        else
+        {
+            rotation = obstacle.transform.rotation;
+        }
+        GameObject spawnedObstacle = Instantiate(obstacle, spawnPos, rotation);
+        spawnedObstacle.transform.SetParent(transform, true);
+        return randomObjectIndex;
     }
 }

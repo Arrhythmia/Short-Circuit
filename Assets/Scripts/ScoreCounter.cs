@@ -21,10 +21,8 @@ public class ScoreCounter : MonoBehaviour
     {
         if (player != null)
         {
-            if (playerController.IsGrounded())
-            {
-                score += 0.2f;
-            }
+            score += 0.2f;
+            
             text.text = Mathf.Round(score).ToString();
         }
     }

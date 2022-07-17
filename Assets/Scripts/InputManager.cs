@@ -6,7 +6,6 @@ using UnityEngine.InputSystem;
 [DefaultExecutionOrder(-1)]
 public class InputManager : Singleton<InputManager>
 {
-    public int framerate = 120;
     public delegate void StartTouchEvent(Vector2 position);
     public event StartTouchEvent OnStartTouch;
     public delegate void EndTouchEvent(Vector2 position);
@@ -20,15 +19,7 @@ public class InputManager : Singleton<InputManager>
     public bool fingerOnScreen;
 
 
-    public void ToggleFps()
-    {
-        if (framerate == 30)
-            framerate = 60;
-        else if (framerate == 60)
-            framerate = 120;
-        else if (framerate == 120)
-            framerate = 30;
-    }
+    
     private void Awake()
     {
         touchControls = new TouchControls();
@@ -50,7 +41,6 @@ public class InputManager : Singleton<InputManager>
     }
     private void Update()
     {
-        Application.targetFrameRate = framerate;
         if (fingerOnScreen)
         {
             touchPos = touchControls.Touch.TouchPosition.ReadValue<Vector2>();

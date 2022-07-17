@@ -9,10 +9,14 @@ public class PlayerController : MonoBehaviour
 
     Vector3 newPos;
     Rigidbody rb;
-    public GameObject GameManagerObject;
+
+    public GameObject gameManagerObject;
     private InputManager inputManager;
     private TimeManager timeManager;
     private GameManager gameManager;
+
+    public ParticleSystem landingParticles;
+    public ParticleSystem deathParticles;
 
     public bool godMode = false;
     [Header("Movement values")]
@@ -23,6 +27,11 @@ public class PlayerController : MonoBehaviour
     public float groundLevel = 0.19f;
     public float groundDetection = 0.6f;
 
+    [Header("Camera Shake")]
+    public CameraShake cameraShake;
+    public float duration;
+    public float magnitude;
+
     private void Awake()
     {
         inputManager = InputManager.Instance;
@@ -30,8 +39,8 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        timeManager = GameManagerObject.GetComponent<TimeManager>();
-        gameManager = GameManagerObject.GetComponent<GameManager>();
+        timeManager = gameManagerObject.GetComponent<TimeManager>();
+        gameManager = gameManagerObject.GetComponent<GameManager>();
         newPos = new Vector3(0, groundLevel, zPos);
     }
 
@@ -47,13 +56,15 @@ public class PlayerController : MonoBehaviour
     }
     public bool IsGrounded()
     {
-        return (Physics.Raycast(transform.position, Vector3.down, groundDetection));
+        return (Physics.Raycast(transform.position + new Vector3 (0f, 0.1f, 0f), Vector3.down, groundDetection * transform.localScale.x));
     }
+    bool hasTappedSinceLastJump = true;
     void MovePlayer()
     {
-        if (inputManager.fingerOnScreen)
+        if (hasTappedSinceLastJump)
         {
-            newPos = new Vector3(newPos.x, groundLevel, newPos.z);
+            //newPos = new Vector3(newPos.x, groundLevel, newPos.z);
+            transform.position = new Vector3(newPos.x, groundLevel, newPos.z);
         }
         if (newPos.x <= edge)
         {
@@ -64,11 +75,41 @@ public class PlayerController : MonoBehaviour
             newPos = new Vector3(-edge, newPos.y, newPos.z);
         }
 
-        transform.SetPositionAndRotation(new Vector3(transform.position.x, transform.position.y, zPos), new Quaternion(0, 0, 0, 0)); // Check later if necessary
+        if (transform.position.x <= edge)
+        {
+            transform.position = new Vector3(edge, transform.position.y, transform.position.z);
+        }
+        if (transform.position.x >= -edge)
+        {
+            transform.position = new Vector3(-edge, transform.position.y, transform.position.z);
+        }
+        transform.SetPositionAndRotation(new Vector3(transform.position.x, transform.position.y, zPos), transform.rotation); // Stop player from rotating unexpectedly
     }
+    bool hasJumped = false;
     void Update()
     {
         UpdateNewPos(inputManager.touchPos);
+
+        if (!IsGrounded() && inputManager.fingerOnScreen)
+        {
+            hasTappedSinceLastJump = true;
+        }
+
+        if (IsGrounded())
+        {
+            transform.rotation = new Quaternion(0, 0, 0, 0);
+        }
+        else
+        {
+            transform.rotation = Quaternion.Euler(new Vector3(Mathf.Clamp(rb.velocity.y, -50, 50) * -5, 0, 0)); // Player jump rotation
+        }
+    }
+    
+    void Land()
+    {
+        StartCoroutine(cameraShake.Shake(duration, magnitude));
+        landingParticles.Play();
+        hasJumped = false;
     }
     private void FixedUpdate()
     {
@@ -79,7 +120,7 @@ public class PlayerController : MonoBehaviour
     {
         MovePlayer();
 
-        Debug.DrawRay(transform.position, Vector3.down * groundDetection, Color.red);
+        Debug.DrawRay(transform.position + new Vector3 (0f, 0.1f, 0f), Vector3.down * groundDetection, Color.red);
     }
     public void UpdateNewPos(Vector2 screenPos)
     {
@@ -99,20 +140,34 @@ public class PlayerController : MonoBehaviour
     void Jump()
     {
         if (IsGrounded())
+        {
+            hasTappedSinceLastJump = false;
             rb.AddForce(jumpForce * Time.fixedDeltaTime * Vector3.up, ForceMode.Impulse);
+            hasJumped = true;
+        }
+
     }
     void ApplyGravity()
     {
-        rb.AddForce(Vector3.down * gravity);
+        rb.AddForce(Vector3.down * gravity, ForceMode.Acceleration);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.CompareTag("Obstacle") && !godMode)
         {
-            gameManager.OnDeath();
+            gameManager.Die();
             timeManager.SlowDown();
-            gameObject.SetActive(false);
+            deathParticles.Play();
+        }
+
+        if (collision.collider.CompareTag("Ground"))
+        {
+            if (hasJumped && hasTappedSinceLastJump)
+            {
+                Land();
+            }
+            hasTappedSinceLastJump = false;
         }
     }
 }
