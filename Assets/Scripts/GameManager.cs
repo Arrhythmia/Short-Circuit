@@ -8,14 +8,25 @@ public class GameManager : MonoBehaviour
 {
     public int framerate = 60;
     public GameObject totalScore;
-    public GameObject restartButton;
     TextMeshProUGUI scoreText;
 
+    public GameObject nameField;
+    TextMeshProUGUI nameTMP;
+
     public GameObject[] elementsToDisableOnDeath;
+    public GameObject[] elementsToEnableOnDeath;
 
     public bool takeScreenshot = false;
     public bool hasTaken = false;
-
+    private void Awake()
+    {
+        Application.targetFrameRate = framerate;
+    }
+    private void Start()
+    {
+        scoreText = totalScore.transform.GetComponent<TextMeshProUGUI>();
+        nameTMP = nameField.GetComponent<TextMeshProUGUI>();
+    }
     private void Update()
     {
         if (takeScreenshot && !hasTaken)
@@ -24,13 +35,23 @@ public class GameManager : MonoBehaviour
             ScreenCapture.CaptureScreenshot("SomeLevel.png", 3);
         }
     }
-    private void Awake()
+
+    public void LoadMainMenu()
     {
-        Application.targetFrameRate = framerate;
+        GetComponent<TimeManager>().ResetSpeed();
+        SceneManager.LoadScene(0);
     }
-    private void Start()
+    public void SubmitScore()
     {
-        scoreText = totalScore.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+        string playerName = nameTMP.text;
+        int score;
+        int.TryParse(scoreText.text, out score);
+        if (score > PlayerPrefs.GetInt("Highscore"))
+        {
+            PlayerPrefs.SetInt("Highscore", score);
+        }
+        Debug.Log(playerName + " scored: " + score.ToString());
+        HighScores.UploadScore(playerName, score);
     }
     public void Die()
     {
@@ -39,13 +60,9 @@ public class GameManager : MonoBehaviour
             element.SetActive(false);
         }
         scoreText.text = Mathf.Round(gameObject.GetComponent<ScoreCounter>().score).ToString();
-        totalScore.SetActive(true);
-        restartButton.SetActive(true);
-    }
-
-    public void OnRestart()
-    {
-        GetComponent<TimeManager>().ResetSpeed();
-        SceneManager.LoadScene(0);
+        foreach (GameObject element in elementsToEnableOnDeath)
+        {
+            element.SetActive(true);
+        }
     }
 }
