@@ -13,6 +13,17 @@ public class GameManager : MonoBehaviour
 
     public GameObject[] elementsToDisableOnDeath;
 
+    public bool takeScreenshot = false;
+    public bool hasTaken = false;
+
+    private void Update()
+    {
+        if (takeScreenshot && !hasTaken)
+        {
+            hasTaken = true;
+            ScreenCapture.CaptureScreenshot("SomeLevel.png", 3);
+        }
+    }
     private void Awake()
     {
         Application.targetFrameRate = framerate;
