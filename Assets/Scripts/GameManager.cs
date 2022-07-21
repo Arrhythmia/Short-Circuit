@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     public GameObject totalScore;
     TextMeshProUGUI scoreText;
 
+    public GameObject errorText;
+
     public GameObject nameField;
     TextMeshProUGUI nameTMP;
 
@@ -34,8 +36,9 @@ public class GameManager : MonoBehaviour
             hasTaken = true;
             ScreenCapture.CaptureScreenshot("SomeLevel.png", 3);
         }
-    }
 
+        errorText.SetActive(HighScores.uploadError);
+    }
     public void LoadMainMenu()
     {
         GetComponent<TimeManager>().ResetSpeed();
@@ -50,7 +53,6 @@ public class GameManager : MonoBehaviour
         {
             PlayerPrefs.SetInt("Highscore", score);
         }
-        Debug.Log(playerName + " scored: " + score.ToString());
         HighScores.UploadScore(playerName, score);
     }
     public void Die()

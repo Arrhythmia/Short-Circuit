@@ -26,6 +26,7 @@ public class HighScores : MonoBehaviour
 
     IEnumerator DatabaseUpload(string userame, int score) //Called when sending new score to Website
     {
+        uploadError = false;
         WWW www = new WWW(webURL + privateCode + "/add/" + WWW.EscapeURL(userame) + "/" + score);
         yield return www;
 
@@ -34,9 +35,13 @@ public class HighScores : MonoBehaviour
             print("Upload Successful");
             DownloadScores();
         }
-        else print("Error uploading" + www.error);
+        else
+        {
+            print("Error uploading" + www.error);
+            uploadError = true;
+        }
     }
-
+    public static bool uploadError = false;
     public void DownloadScores()
     {
         StartCoroutine("DatabaseDownload");

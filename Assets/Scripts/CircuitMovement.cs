@@ -20,6 +20,7 @@ public class CircuitMovement : MonoBehaviour
             float offset = transform.position.z - spawnNextPos.z;
             spawnedNext = true;
             GameObject nextObject = Instantiate(gameObject, nextPos + new Vector3(0, 0, offset), new Quaternion(0, 0, 0, 0));
+            nextObject.name = gameObject.name;
             nextObject.transform.parent = transform.parent;
         }
         //self-cleaning
