@@ -9,6 +9,7 @@ TagManager:
   - MiddleCircuit
   - SideCircuit
   - Ground
+  - UI
   layers:
   - Default
   - TransparentFX

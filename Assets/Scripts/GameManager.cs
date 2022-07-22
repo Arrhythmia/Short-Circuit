@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,11 +16,21 @@ public class GameManager : MonoBehaviour
     public GameObject nameField;
     TextMeshProUGUI nameTMP;
 
-    public GameObject[] elementsToDisableOnDeath;
-    public GameObject[] elementsToEnableOnDeath;
+    public GameObject[] disableOnDeath;
+    public GameObject[] enableOnDeath;
+
+    public GameObject pauseMenu;
+    public GameObject pauseButton;
 
     public bool takeScreenshot = false;
     public bool hasTaken = false;
+
+    TimeManager timeManager;
+
+    public bool isPaused = false;
+
+
+    public UnityEvent onCompleteCallback;
     private void Awake()
     {
         Application.targetFrameRate = framerate;
@@ -28,6 +39,37 @@ public class GameManager : MonoBehaviour
     {
         scoreText = totalScore.transform.GetComponent<TextMeshProUGUI>();
         nameTMP = nameField.GetComponent<TextMeshProUGUI>();
+        timeManager = GetComponent<TimeManager>();
+    }
+    public void Pause()
+    {
+        isPaused = true;
+        timeManager.Pause();
+        pauseMenu.SetActive(true);
+        LeanTween.scale(pauseButton, Vector3.zero, 0.1f).setDelay(0f).setOnComplete(OnCompletePauseAnim).setIgnoreTimeScale(true);
+        Camera.main.GetComponent<CameraShake>().enabled = false;
+    }
+    public void OnCompletePauseAnim()
+    {
+        pauseButton.SetActive(false);
+        //LeanTween.alphaCanvas(pauseMenu.transform.GetChild(0).GetComponent<CanvasGroup>(), 0f, 1f).setIgnoreTimeScale(true);
+        LeanTween.moveLocalY(pauseMenu.transform.GetChild(0).gameObject, 109.4f, 0.05f).setIgnoreTimeScale(true);
+        LeanTween.scale(pauseMenu.transform.GetChild(1).gameObject, Vector3.one, 0.1f).setDelay(0f).setOnComplete(OnCompleteResumeAnim).setIgnoreTimeScale(true);
+    }
+    public void OnCompleteResumeAnim()
+    {
+        LeanTween.scale(pauseMenu.transform.GetChild(2).gameObject, Vector3.one, 0.1f).setDelay(0f).setIgnoreTimeScale(true);
+    }
+    public void Resume()
+    {
+        isPaused = false;
+        timeManager.ResetSpeed();
+        pauseButton.SetActive(true);
+        pauseMenu.SetActive(false);
+        LeanTween.scale(pauseButton, Vector3.one, 0.1f).setDelay(0f).setIgnoreTimeScale(true);
+        LeanTween.moveLocalY(pauseMenu.transform.GetChild(0).gameObject, 230.5f, 0.05f).setIgnoreTimeScale(true);
+        LeanTween.scale(pauseMenu.transform.GetChild(1).gameObject, Vector3.zero, 0.1f).setDelay(0f).setIgnoreTimeScale(true);
+        LeanTween.scale(pauseMenu.transform.GetChild(2).gameObject, Vector3.zero, 0.1f).setDelay(0f).setIgnoreTimeScale(true);
     }
     private void Update()
     {
@@ -44,27 +86,34 @@ public class GameManager : MonoBehaviour
         GetComponent<TimeManager>().ResetSpeed();
         SceneManager.LoadScene(0);
     }
-    public void SubmitScore()
+    public void UploadScore()
     {
         string playerName = nameTMP.text;
+        int score;
+        int.TryParse(scoreText.text, out score);
+        HighScores.UploadScore(playerName, score);
+    }
+    void SaveLocalScore()
+    {
         int score;
         int.TryParse(scoreText.text, out score);
         if (score > PlayerPrefs.GetInt("Highscore"))
         {
             PlayerPrefs.SetInt("Highscore", score);
         }
-        HighScores.UploadScore(playerName, score);
     }
     public void Die()
     {
-        foreach (GameObject element in elementsToDisableOnDeath)
+        isPaused = true;
+        foreach (GameObject element in disableOnDeath)
         {
             element.SetActive(false);
         }
         scoreText.text = Mathf.Round(gameObject.GetComponent<ScoreCounter>().score).ToString();
-        foreach (GameObject element in elementsToEnableOnDeath)
+        foreach (GameObject element in enableOnDeath)
         {
             element.SetActive(true);
         }
+        SaveLocalScore();
     }
 }

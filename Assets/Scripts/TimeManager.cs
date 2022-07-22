@@ -30,4 +30,10 @@ public class TimeManager : MonoBehaviour
         Time.timeScale = 1f;
         Time.fixedDeltaTime = 0.02f;
     }
+
+    public void Pause()
+    {
+        Time.timeScale = 0f;
+        Time.fixedDeltaTime = 0f;
+    }
 }

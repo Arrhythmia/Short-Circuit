@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+using UnityEngine.EventSystems;
+
 [DefaultExecutionOrder(-1)]
 public class InputManager : Singleton<InputManager>
 {
@@ -39,9 +41,9 @@ public class InputManager : Singleton<InputManager>
         touchControls.Touch.TouchPress.started += ctx => StartTouch(ctx);
         touchControls.Touch.TouchPress.canceled += ctx => EndTouch(ctx);
     }
-    private void Update()
+    private void FixedUpdate()
     {
-        if (fingerOnScreen)
+        if (fingerOnScreen && !EventSystem.current.IsPointerOverGameObject())
         {
             touchPos = touchControls.Touch.TouchPosition.ReadValue<Vector2>();
         }
@@ -56,5 +58,25 @@ public class InputManager : Singleton<InputManager>
         fingerOnScreen = false;
         OnEndTouch?.Invoke(touchControls.Touch.TouchPosition.ReadValue<Vector2>());
         OnCancelTouch?.Invoke();
+    }
+    public bool FingerInValidPlace()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(touchPos);
+
+        RaycastHit[] hits = Physics.RaycastAll(ray, 200f);
+
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.collider.CompareTag("UI"))
+            {
+                return false;
+            }
+            if (hit.collider.CompareTag("Platform"))
+            {
+                if (fingerOnScreen)
+                    return true;
+            }
+        }
+        return false;
     }
 }
