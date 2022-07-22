@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour
         scoreText = totalScore.transform.GetComponent<TextMeshProUGUI>();
         nameTMP = nameField.GetComponent<TextMeshProUGUI>();
         timeManager = GetComponent<TimeManager>();
+        timeManager.ResetSpeed();
     }
     public void Pause()
     {
@@ -48,6 +49,10 @@ public class GameManager : MonoBehaviour
         pauseMenu.SetActive(true);
         LeanTween.scale(pauseButton, Vector3.zero, 0.1f).setDelay(0f).setOnComplete(OnCompletePauseAnim).setIgnoreTimeScale(true);
         Camera.main.GetComponent<CameraShake>().enabled = false;
+    }
+    public void Restart()
+    {
+        SceneManager.LoadScene(1);
     }
     public void OnCompletePauseAnim()
     {
@@ -78,8 +83,17 @@ public class GameManager : MonoBehaviour
             hasTaken = true;
             ScreenCapture.CaptureScreenshot("SomeLevel.png", 3);
         }
+        errorText.SetActive(HighScores.uploadAttempted && HighScores.uploadError);
 
-        errorText.SetActive(HighScores.uploadError);
+        if (HighScores.uploadAttempted && !HighScores.uploadError)
+        {
+            UploadSuccessful();
+        }
+    }
+    void UploadSuccessful()
+    {
+        timeManager.ResetSpeed();
+        SceneManager.LoadScene(0);
     }
     public void LoadMainMenu()
     {

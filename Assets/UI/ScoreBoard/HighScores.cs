@@ -17,6 +17,9 @@ public class HighScores : MonoBehaviour
     {
         instance = this; //Sets Static Instance
         myDisplay = GetComponent<DisplayHighscores>();
+
+        uploadError = false;
+        uploadAttempted = false;
     }
     
     public static void UploadScore(string username, int score)  //CALLED when Uploading new Score to WEBSITE
@@ -40,8 +43,10 @@ public class HighScores : MonoBehaviour
             print("Error uploading" + www.error);
             uploadError = true;
         }
+        uploadAttempted = true;
     }
     public static bool uploadError = false;
+    public static bool uploadAttempted = false;
     public void DownloadScores()
     {
         StartCoroutine("DatabaseDownload");
