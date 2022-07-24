@@ -125,13 +125,15 @@ public class PlayerController : MonoBehaviour
     float timeSinceLastJump = 0f;
     private void FixedUpdate()
     {
+        ApplyGravity();
         if (!gameManager.isPaused && !IsOverUI())
         {
             transform.position = Vector3.Lerp(transform.position, newPos, lerpValue);
-            ApplyGravity();
         }
         if (timeSinceLastJump < jumpCoolDown)
+        {
             timeSinceLastJump++;
+        }
     }
     private void LateUpdate()
     {
