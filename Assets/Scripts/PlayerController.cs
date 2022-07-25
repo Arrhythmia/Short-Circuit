@@ -34,6 +34,8 @@ public class PlayerController : MonoBehaviour
     public float duration;
     public float magnitude;
 
+
+    AudioController audioController;
     private void Awake()
     {
         inputManager = InputManager.Instance;
@@ -44,6 +46,7 @@ public class PlayerController : MonoBehaviour
         timeManager = gameManagerObject.GetComponent<TimeManager>();
         gameManager = gameManagerObject.GetComponent<GameManager>();
         newPos = new Vector3(0, groundLevel, zPos);
+        audioController = GetComponent<AudioController>();
     }
 
     private void OnEnable()
@@ -120,6 +123,7 @@ public class PlayerController : MonoBehaviour
     {
         StartCoroutine(cameraShake.Shake(duration, magnitude));
         landingParticles.Play();
+        audioController.PlaySlamSound();
         hasJumped = false;
     }
     float timeSinceLastJump = 0f;
@@ -168,6 +172,7 @@ public class PlayerController : MonoBehaviour
             timeSinceLastJump = 0;
             hasTappedSinceLastJump = false;
             rb.AddForce(jumpForce * Time.fixedDeltaTime * Vector3.up, ForceMode.Impulse);
+            audioController.PlayJumpSound();
             hasJumped = true;
         }
     }
@@ -181,6 +186,7 @@ public class PlayerController : MonoBehaviour
         if (collision.collider.CompareTag("Obstacle") && !godMode)
         {
             gameManager.Die();
+            audioController.PlayDeathSound();
             timeManager.SlowDown();
             deathParticles.Play();
         }

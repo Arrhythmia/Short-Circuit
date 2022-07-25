@@ -13,13 +13,15 @@ public class SettingsMenu : MonoBehaviour
     }
     public void ChangeVolume()
     {
-        PlayerPrefs.SetInt("Volume", Mathf.RoundToInt(volSlider.value));
+        float val = volSlider.value / 100.0f;
+        PlayerPrefs.SetFloat("Volume", val);
         PlayerPrefs.Save();
+        AudioListener.volume = val;
     }
 
     void LoadPrefs()
     {
-        volSlider.value = PlayerPrefs.GetInt("Volume");
+        volSlider.value = PlayerPrefs.GetFloat("Volume") * 100.0f;
     }
 
     public void LoadMainMenu()

@@ -11,6 +11,10 @@ public class MainMenu : MonoBehaviour
     {
         Application.targetFrameRate = 60;
     }
+    private void Start()
+    {
+        AudioListener.volume = PlayerPrefs.GetFloat("Volume");
+    }
     public void PlayGame()
     {
         SceneManager.LoadScene(1);

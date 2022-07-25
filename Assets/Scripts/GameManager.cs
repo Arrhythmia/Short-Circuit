@@ -41,6 +41,9 @@ public class GameManager : MonoBehaviour
         nameTMP = nameField.GetComponent<TextMeshProUGUI>();
         timeManager = GetComponent<TimeManager>();
         timeManager.ResetSpeed();
+
+
+        AudioListener.volume = PlayerPrefs.GetFloat("Volume"); //TEMPORARY
     }
     public void Pause()
     {
