@@ -8,9 +8,9 @@ using UnityEngine.EventSystems;
 [DefaultExecutionOrder(-1)]
 public class InputManager : Singleton<InputManager>
 {
-    public delegate void StartTouchEvent(Vector2 position);
+    public delegate void StartTouchEvent();
     public event StartTouchEvent OnStartTouch;
-    public delegate void EndTouchEvent(Vector2 position);
+    public delegate void EndTouchEvent();
     public event EndTouchEvent OnEndTouch;
     public delegate void TouchCancelledEvent();
     public event TouchCancelledEvent OnCancelTouch;
@@ -51,12 +51,12 @@ public class InputManager : Singleton<InputManager>
     private void StartTouch(InputAction.CallbackContext context)
     {
         fingerOnScreen = true;
-        OnStartTouch?.Invoke(touchControls.Touch.TouchPosition.ReadValue<Vector2>());
+        OnStartTouch?.Invoke();
     }
     private void EndTouch(InputAction.CallbackContext context)
     {
         fingerOnScreen = false;
-        OnEndTouch?.Invoke(touchControls.Touch.TouchPosition.ReadValue<Vector2>());
+        OnEndTouch?.Invoke();
         OnCancelTouch?.Invoke();
     }
     public bool FingerInValidPlace()

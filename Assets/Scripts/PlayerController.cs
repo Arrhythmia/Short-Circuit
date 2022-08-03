@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 using UnityEngine.EventSystems;
@@ -36,6 +34,7 @@ public class PlayerController : MonoBehaviour
 
 
     AudioController audioController;
+    bool isDead = false;
     private void Awake()
     {
         inputManager = InputManager.Instance;
@@ -167,7 +166,7 @@ public class PlayerController : MonoBehaviour
     }
     void Jump()
     {
-        if (IsGrounded() && timeSinceLastJump >= jumpCoolDown)
+        if (IsGrounded() && timeSinceLastJump >= jumpCoolDown && !gameManager.isPaused)
         {
             timeSinceLastJump = 0;
             hasTappedSinceLastJump = false;
@@ -180,15 +179,18 @@ public class PlayerController : MonoBehaviour
     {
         rb.AddForce(Vector3.down * gravity, ForceMode.Acceleration);
     }
-
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.CompareTag("Obstacle") && !godMode)
         {
-            gameManager.Die();
-            audioController.PlayDeathSound();
-            timeManager.SlowDown();
-            deathParticles.Play();
+            if (!isDead)
+            {
+                isDead = true;
+                gameManager.Die();
+                timeManager.SlowDown();
+                deathParticles.Play();
+                audioController.PlayDeathSound();
+            }
         }
 
         

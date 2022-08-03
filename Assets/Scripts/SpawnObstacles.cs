@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 public class SpawnObstacles : MonoBehaviour
 {
@@ -29,12 +26,27 @@ public class SpawnObstacles : MonoBehaviour
                 if (random.Next(0, 100) <= spawnPercentage)
                 {
                     spawnPos.x = spawnPosX[j].transform.position.x;
-                    int randomObjectIndex = SpawnRandomObstacle(spawnPos, j);
-
-                    if (randomObjectIndex == 6)
+                    RaycastHit[] hits = Physics.SphereCastAll(spawnPos, 1f, transform.forward);
+                    bool posTaken = false;
+                    foreach (RaycastHit hit in hits)
                     {
-                        j++;
+                        if (hit.transform.CompareTag("Obstacle"))
+                        {
+                            posTaken = true;
+                        }
                     }
+                    if (!posTaken)
+                    {
+                        int randomObjectIndex = SpawnRandomObstacle(spawnPos, j);
+
+                        if (randomObjectIndex == 6)
+                        {
+                            j++;
+                        }
+                    }
+                    
+
+                    
                 }
             }
             spawnPos.z += nextPosZ; // Prepare next spawning position

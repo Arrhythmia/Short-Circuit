@@ -181,6 +181,7 @@ Library: lib_burst_generated
 --root-assembly=C:\Users\Nate\Documents\GitHub\ShortCircuit\Short-Circuit\Temp\StagingArea\Data\Managed\Unity.Services.Core.Scheduler.dll
 --root-assembly=C:\Users\Nate\Documents\GitHub\ShortCircuit\Short-Circuit\Temp\StagingArea\Data\Managed\Unity.Services.Core.Device.dll
 --root-assembly=C:\Users\Nate\Documents\GitHub\ShortCircuit\Short-Circuit\Temp\StagingArea\Data\Managed\Unity.Services.Core.Analytics.dll
+--root-assembly=C:\Users\Nate\Documents\GitHub\ShortCircuit\Short-Circuit\Temp\StagingArea\Data\Managed\Boxophobic.Utils.Scripts.dll
 --root-assembly=C:\Users\Nate\Documents\GitHub\ShortCircuit\Short-Circuit\Temp\StagingArea\Data\Managed\Unity.Services.RemoteConfig.dll
 --root-assembly=C:\Users\Nate\Documents\GitHub\ShortCircuit\Short-Circuit\Temp\StagingArea\Data\Managed\Unity.RemoteConfig.Editor.Core.dll
 --root-assembly=C:\Users\Nate\Documents\GitHub\ShortCircuit\Short-Circuit\Temp\StagingArea\Data\Managed\Unity.Services.Core.Threading.dll

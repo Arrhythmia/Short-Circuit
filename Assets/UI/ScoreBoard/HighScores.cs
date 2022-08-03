@@ -35,12 +35,12 @@ public class HighScores : MonoBehaviour
 
         if (string.IsNullOrEmpty(www.error))
         {
-            print("Upload Successful");
+            Debug.Log("Upload Successful");
             DownloadScores();
         }
         else
         {
-            print("Error uploading" + www.error);
+            Debug.Log("Error uploading" + www.error);
             uploadError = true;
         }
         uploadAttempted = true;
@@ -62,7 +62,7 @@ public class HighScores : MonoBehaviour
             OrganizeInfo(webRequest.text);
             myDisplay.SetScoresToMenu(scoreList);
         }
-        else print("Error uploading" + webRequest.error);
+        else Debug.Log("Error uploading" + webRequest.error);
     }
 
     void OrganizeInfo(string rawData) //Divides Scoreboard info by new lines
@@ -75,7 +75,6 @@ public class HighScores : MonoBehaviour
             string username = entryInfo[0];
             int score = int.Parse(entryInfo[1]);
             scoreList[i] = new PlayerScore(username,score);
-            print(scoreList[i].username + ": " + scoreList[i].score);
         }
     }
 }

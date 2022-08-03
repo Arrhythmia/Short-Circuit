@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
@@ -22,8 +20,8 @@ public class GameManager : MonoBehaviour
     public GameObject pauseMenu;
     public GameObject pauseButton;
 
-    public bool takeScreenshot = false;
-    public bool hasTaken = false;
+    /*public bool takeScreenshot = false;
+    public bool hasTaken = false;*/
 
     TimeManager timeManager;
 
@@ -41,7 +39,6 @@ public class GameManager : MonoBehaviour
         nameTMP = nameField.GetComponent<TextMeshProUGUI>();
         timeManager = GetComponent<TimeManager>();
         timeManager.ResetSpeed();
-
 
         AudioListener.volume = PlayerPrefs.GetFloat("Volume"); //TEMPORARY
     }
@@ -81,11 +78,11 @@ public class GameManager : MonoBehaviour
     }
     private void Update()
     {
-        if (takeScreenshot && !hasTaken)
+        /*if (takeScreenshot && !hasTaken)
         {
             hasTaken = true;
             ScreenCapture.CaptureScreenshot("SomeLevel.png", 3);
-        }
+        }*/
         errorText.SetActive(HighScores.uploadAttempted && HighScores.uploadError);
 
         if (HighScores.uploadAttempted && !HighScores.uploadError)
